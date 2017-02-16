@@ -10,7 +10,7 @@ void MyPrimitive::CompileObject(vector3 a_v3Color)
 	{
 		AddVertexColor(a_v3Color);
 	}
-	
+
 	CompleteTriangleInfo(true);
 	CompileOpenGL3X();
 
@@ -121,12 +121,23 @@ void MyPrimitive::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivis
 	//3--2
 	//|  |
 	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	std::vector<vector3> points;
 
-	AddTri(point0, point1, point3);
+	points.push_back(vector3(0.0f));
+
+	float theta = 0.0f;
+	float steps = (2 * PI)/ static_cast<float>(a_nSubdivisions);
+
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		points.push_back(vector3(glm::cos(theta), glm::sin(theta), 0.0f));
+		theta += steps;
+	}
+
+	for (int i = 1; i < a_nSubdivisions; ++i) {
+		AddTri(points[0], points[i], points[i + 1]);
+	}
+
+	AddTri(points[a_nSubdivisions], points[1], points[0]);
 
 	//Your code ends here
 	CompileObject(a_v3Color);
