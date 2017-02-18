@@ -117,27 +117,32 @@ void MyPrimitive::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivis
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
+	float fValue = 0.5f * a_fHeight;
+	//Variable that is the tip of the cone
+	vector3 topPoint(0.0f, a_fHeight, 0.0f);
 	std::vector<vector3> points;
 
-	points.push_back(vector3(0.0f));
+	//Add center of the base to make life a little easier
+	points.push_back(vector3(0.0f, -fValue, 0.0f));
 
 	float theta = 0.0f;
-	float steps = (2 * PI)/ static_cast<float>(a_nSubdivisions);
+	float steps = (2 * PI) / static_cast<float>(a_nSubdivisions);
 
+	//Loop through and add in the points that make up the base
 	for (int i = 0; i < a_nSubdivisions; i++) {
-		points.push_back(vector3(glm::cos(theta), glm::sin(theta), 0.0f));
+		points.push_back(vector3(glm::cos(theta) * a_fRadius, -fValue, glm::sin(theta) * a_fRadius));
 		theta += steps;
 	}
 
+	//Loop through and connect the faces
 	for (int i = 1; i < a_nSubdivisions; ++i) {
 		AddTri(points[0], points[i], points[i + 1]);
+		AddTri(topPoint, points[i + 1], points[i]);
 	}
 
+	//Left over faces that the loop cannot handle
 	AddTri(points[a_nSubdivisions], points[1], points[0]);
+	AddTri(topPoint, points[1], points[a_nSubdivisions]);
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -153,16 +158,36 @@ void MyPrimitive::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubd
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	float fValue = 0.5f * a_fHeight;
+	//2 vectors of points as we need a top and base
+	std::vector<vector3> topPoints;
+	std::vector<vector3> basePoints;
 
-	AddQuad(point0, point1, point3, point2);
+	//Add both center points
+	topPoints.push_back(vector3(0.0f, fValue, 0.0f));
+	basePoints.push_back(vector3(0.0f, -fValue, 0.0f));
+
+	float theta = 0.0f;
+	float steps = (2 * PI) / static_cast<float>(a_nSubdivisions);
+
+	//Loop through and add the points of the bases
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		topPoints.push_back(vector3(glm::cos(theta) * a_fRadius, fValue, glm::sin(theta) * a_fRadius));
+		basePoints.push_back(vector3(glm::cos(theta) * a_fRadius, -fValue, glm::sin(theta) * a_fRadius));
+		theta += steps;
+	}
+
+	//Connect the faces
+	for (int i = 1; i < a_nSubdivisions; ++i) {
+		AddTri(topPoints[0], topPoints[i + 1], topPoints[i]);
+		AddTri(basePoints[0], basePoints[i], basePoints[i + 1]);
+		AddQuad(basePoints[i + 1], basePoints[i], topPoints[i + 1], topPoints[i]);
+	}
+
+	//Extra faces the loop cannot handle
+	AddTri(topPoints[a_nSubdivisions], topPoints[0], topPoints[1]);
+	AddTri(basePoints[a_nSubdivisions], basePoints[1], basePoints[0]);
+	AddQuad(basePoints[1], basePoints[a_nSubdivisions], topPoints[1], topPoints[a_nSubdivisions]);
 
 	//Your code ends here
 	CompileObject(a_v3Color);
@@ -178,16 +203,45 @@ void MyPrimitive::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float
 	Init();
 
 	//Your code starts here
-	float fValue = 0.5f;
-	//3--2
-	//|  |
-	//0--1
-	vector3 point0(-fValue, -fValue, fValue); //0
-	vector3 point1(fValue, -fValue, fValue); //1
-	vector3 point2(fValue, fValue, fValue); //2
-	vector3 point3(-fValue, fValue, fValue); //3
+	float fValue = 0.5f * a_fHeight;
+	//4 vectors of points because we need inner and outer rings
+	std::vector<vector3> topPointsInner;
+	std::vector<vector3> basePointsInner;
+	std::vector<vector3> topPointsOuter;
+	std::vector<vector3> basePointsOuter;
 
-	AddQuad(point0, point1, point3, point2);
+	//I don't know why I used the centers, but it breaks if I don't
+	topPointsInner.push_back(vector3(0.0f, fValue, 0.0f));
+	basePointsInner.push_back(vector3(0.0f, -fValue, 0.0f));
+	topPointsOuter.push_back(vector3(0.0f, fValue, 0.0f));
+	basePointsOuter.push_back(vector3(0.0f, -fValue, 0.0f));
+
+	float theta = 0.0f;
+	float steps = (2 * PI) / static_cast<float>(a_nSubdivisions);
+
+	//Loop through and add the points of the inner and outer circles of the top and base
+	for (int i = 0; i < a_nSubdivisions; i++) {
+		topPointsInner.push_back(vector3(glm::cos(theta) * a_fInnerRadius, fValue, glm::sin(theta) * a_fInnerRadius));
+		basePointsInner.push_back(vector3(glm::cos(theta) * a_fInnerRadius, -fValue, glm::sin(theta) * a_fInnerRadius));
+		topPointsOuter.push_back(vector3(glm::cos(theta) * a_fOuterRadius, fValue, glm::sin(theta) * a_fOuterRadius));
+		basePointsOuter.push_back(vector3(glm::cos(theta) * a_fOuterRadius, -fValue, glm::sin(theta) * a_fOuterRadius));
+		theta += steps;
+	}
+
+	//Loop through and connect the faces
+	//Similar to GenerateCylinder(), but with an inner, reversed set of sides
+	for (int i = 1; i < a_nSubdivisions; ++i) {
+		AddQuad(basePointsInner[i], basePointsInner[i + 1], topPointsInner[i], topPointsInner[i + 1]);
+		AddQuad(basePointsOuter[i + 1], basePointsOuter[i], topPointsOuter[i + 1], topPointsOuter[i]);
+		AddQuad(topPointsOuter[i + 1], topPointsOuter[i], topPointsInner[i + 1], topPointsInner[i]);
+		AddQuad(basePointsOuter[i], basePointsOuter[i + 1], basePointsInner[i], basePointsInner[i + 1]);
+	}
+
+	//Last faces that the loop cannot handle
+	AddQuad(basePointsInner[a_nSubdivisions], basePointsInner[1], topPointsInner[a_nSubdivisions], topPointsInner[1]);
+	AddQuad(basePointsOuter[1], basePointsOuter[a_nSubdivisions], topPointsOuter[1], topPointsOuter[a_nSubdivisions]);
+	AddQuad(topPointsOuter[1], topPointsOuter[a_nSubdivisions], topPointsInner[1], topPointsInner[a_nSubdivisions]);
+	AddQuad(basePointsOuter[a_nSubdivisions], basePointsOuter[1], basePointsInner[a_nSubdivisions], basePointsInner[1]);
 
 	//Your code ends here
 	CompileObject(a_v3Color);
