@@ -51,7 +51,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A05_Transformations", "A05_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "A04s_3DShapes_DEMO", "A04s_3DShapes\A04s_3DShapes.vcxproj", "{1249A06E-032E-4611-8749-E48CB5FCFF68}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E06_Lerp", "E06_Lerp\E06_Lerp.vcxproj", "{A37107BE-D253-478D-A5FE-6389D8EC8FD8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "E07_Lerp", "E07_Lerp\E07_Lerp.vcxproj", "{A37107BE-D253-478D-A5FE-6389D8EC8FD8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
