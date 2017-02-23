@@ -51,14 +51,13 @@ void AppClass::Update(void)
 #pragma region YOUR CODE GOES HERE
 	//Calculate the position of the Earth
 	m_m4Earth = glm::rotate(IDENTITY_M4, m_fEarthTimer, vector3(0.0f, 1.0f, 0.0f));
-
 	//Calculate the position of the Moon
 	m_m4Moon = glm::rotate(IDENTITY_M4, m_fMoonTimer, vector3(0.0f, 1.0f, 0.0f));
 #pragma endregion
 
 #pragma region Print info
 	printf("Earth Day: %.3f, Moon Day: %.3f\r", m_fEarthTimer, m_fMoonTimer);//print the Frames per Second
-	
+
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
 	//Print info on the screen
@@ -82,10 +81,10 @@ void AppClass::Display(void)
 	ClearScreen();
 
 	//Renders the meshes using the specified position given by the matrix and in the specified color
-	m_pSun->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m_m4Sun);
+	//m_pSun->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m_m4Sun);
 	m_pEarth->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m_m4Earth);
 	m_pMoon->Render(m_pCameraMngr->GetProjectionMatrix(), m_pCameraMngr->GetViewMatrix(), m_m4Moon);
-	
+
 	//Render the grid based on the camera's mode:
 	m_pMeshMngr->AddGridToRenderListBasedOnCamera(m_pCameraMngr->GetCameraMode());
 	m_pMeshMngr->Render(); //renders the render list
