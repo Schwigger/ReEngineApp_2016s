@@ -6,8 +6,8 @@ void AppClass::ProcessKeyboard(void)
 
 #pragma region ON PRESS/RELEASE DEFINITION
 	static bool	bLastF1 = false, bLastF2 = false, bLastF3 = false, bLastF4 = false, bLastF5 = false,
-				bLastF6 = false, bLastF7 = false, bLastF8 = false, bLastF9 = false, bLastF10 = false,
-				bLastEscape = false, bLastF = false;
+		bLastF6 = false, bLastF7 = false, bLastF8 = false, bLastF9 = false, bLastF10 = false,
+		bLastEscape = false, bLastF = false;
 #define ON_KEY_PRESS_RELEASE(key, pressed_action, released_action){  \
 			bool pressed = sf::Keyboard::isKeyPressed(sf::Keyboard::key);			\
 			if(pressed){											\
@@ -17,23 +17,23 @@ void AppClass::ProcessKeyboard(void)
 #pragma endregion
 
 #pragma region Modifiers
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) || sf::Keyboard::isKeyPressed(sf::Keyboard::RShift))
 		bModifier = true;
 #pragma endregion
 
 #pragma region Camera Positioning
-	if(bModifier)
+	if (bModifier)
 		fSpeed *= 10.0f;
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		m_pCameraMngr->MoveForward(fSpeed);
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 		m_pCameraMngr->MoveForward(-fSpeed);
-	
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		m_pCameraMngr->MoveSideways(-fSpeed);
 
-	if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		m_pCameraMngr->MoveSideways(fSpeed);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
@@ -41,6 +41,46 @@ void AppClass::ProcessKeyboard(void)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		m_pCameraMngr->MoveVertical(fSpeed);
+#pragma endregion
+
+#pragma region Move Sun
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
+		if (bModifier) {
+			matrix4 temp = glm::translate(vector3(fSpeed, 0.0f, 0.0f));
+			m_m4Sun = m_m4Sun * temp;
+		}
+		else {
+			matrix4 temp = glm::translate(vector3(-fSpeed, 0.0f, 0.0f));
+			m_m4Sun = m_m4Sun * temp;
+		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y)) {
+		if (bModifier) {
+			matrix4 temp = glm::translate(vector3(0.0f, fSpeed, 0.0f));
+			m_m4Sun = m_m4Sun * temp;
+		}
+		else {
+			matrix4 temp = glm::translate(vector3(0.0f, -fSpeed, 0.0f));
+			m_m4Sun = m_m4Sun * temp;
+		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+		if (bModifier) {
+			matrix4 temp = glm::translate(vector3(0.0f, 0.0f, fSpeed));
+			m_m4Sun = m_m4Sun * temp;
+		}
+		else {
+			matrix4 temp = glm::translate(vector3(0.0f, 0.0f, -fSpeed));
+			m_m4Sun = m_m4Sun * temp;
+		}
+	}
+
+	//Reset Sun position to the origin
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) {
+		m_m4Sun = IDENTITY_M4;
+	}
 #pragma endregion
 
 #pragma region Other Actions
@@ -67,9 +107,9 @@ void AppClass::ProcessMouse(void)
 			bLast##key = pressed; } //remember the state
 #pragma endregion
 
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle))
 		m_bArcBall = true;
-	
-	if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
 		m_bFPC = true;
 }
