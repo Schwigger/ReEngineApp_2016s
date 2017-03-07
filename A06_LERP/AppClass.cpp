@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("Assignment  06 - LERP"); // Window Name
+	super::InitWindow("Assignment  06 - LERP Schweigardt"); // Window Name
 }
 
 void AppClass::InitVariables(void)
@@ -32,11 +32,31 @@ void AppClass::Update(void)
 
 	//cumulative time
 	static double fRunTime = 0.0f; //How much time has passed since the program started
-	fRunTime += fTimeSpan; 
+	fRunTime += fTimeSpan;
 #pragma endregion
 
 #pragma region Your Code goes here
-	m_pMeshMngr->SetModelMatrix(IDENTITY_M4, "WallEye");
+	matrix4 m_pMatrix = IDENTITY_M4;
+
+	std::vector<vector3> positions = {
+		vector3(-4.0f,-2.0f,5.0f),
+		vector3(1.0f,-2.0f,5.0f),
+		vector3(-3.0f,-1.0f,3.0f),
+		vector3(2.0f,-1.0f,3.0f),
+		vector3(-2.0f,0.0f,0.0f),
+		vector3(3.0f,0.0f,0.0f),
+		vector3(-1.0f,1.0f,-3.0f),
+		vector3(4.0f,1.0f,-3.0f),
+		vector3(0.0f,2.0f,-5.0f),
+		vector3(5.0f,2.0f,-5.0f),
+		vector3(1.0f,3.0f,-5.0f)
+	};
+
+	for (int i = 0; i < positions.capacity; i++) {
+
+	}
+
+	m_pMeshMngr->SetModelMatrix(m_pMatrix, "WallEye");
 #pragma endregion
 
 #pragma region Does not need changes but feel free to change anything here
