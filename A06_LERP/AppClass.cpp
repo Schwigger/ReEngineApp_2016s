@@ -36,11 +36,10 @@ void AppClass::Update(void)
 #pragma endregion
 
 #pragma region Your Code goes here
-	//Use the Clock
-	static DWORD startTimeSystem = GetTickCount();	//Ask system's start up time
-	DWORD timeApplication = GetTickCount() - startTimeSystem;	//Get current time and subtract the start time
-	float timer = timeApplication / 1000.0f;	//time is in milliseconds need it in seconds
 	matrix4 m4WallEye = IDENTITY_M4;
+	static int point = 0;
+	vector3 v3Lerp;
+	matrix4 m4Shere1;
 
 	std::vector<vector3> positions = {
 		vector3(-4.0f,-2.0f, 5.0f),
@@ -56,22 +55,33 @@ void AppClass::Update(void)
 		vector3(1.0f, 3.0f,-5.0f)
 	};
 
+	//Use the Clock
+	static DWORD startTimeSystem = GetTickCount();	//Ask system's start up time
+	DWORD timeApplication = GetTickCount() - startTimeSystem;	//Get current time and subtract the start time
+	float timer = timeApplication / 1000.0f;	//time is in milliseconds need it in seconds
+	float timerMapped;
+
 	//Make a matrix & add sphere(s)
-	matrix4 m4Shere1;
 	for (int i = 0; i < 11; ++i) {
 		m4Shere1 = glm::translate(positions[i]) * glm::scale(vector3(0.1f));
 		m_pMeshMngr->AddSphereToRenderList(m4Shere1, RERED, WIRE | SOLID);
 	}
 
-	float timerMapped = MapValue(timer, 0.0f, 5.0f, 0.0f, 1.0f);
-	if (timerMapped > 1.0f) {
-		timerMapped = 0.0f;
-	}
+	if (point < 11)
+	{
+		timerMapped = MapValue(timer, 0.0f, 5.0f, 0.0f, 1.0f);
 
-	vector3 v3Lerp;
+		if (timerMapped > 1.0f) {
+			++point;
+			timerMapped = 0.0f;
+		}
+		if (point == 10) {
+			v3Lerp = glm::lerp(positions[10], positions[0], timerMapped);
+			point = 0;
+			timerMapped = 0.0f;
+		}
 
-	for (int i = 0; i < 11; i++) {
-		v3Lerp = glm::lerp(positions[i], positions[i + 1], timerMapped);
+		v3Lerp = glm::lerp(positions[point], positions[point + 1], timerMapped);
 	}
 
 	m4WallEye = glm::translate(v3Lerp);
