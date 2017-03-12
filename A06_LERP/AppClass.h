@@ -87,6 +87,8 @@ public:
 	OUTPUT: ---
 	*/
 	virtual void Release(void) final;
+
+	float CalcDist(const vector3& point1, const vector3& point2);
 };
 
 #endif //__APPLICATION_H_
