@@ -36,9 +36,6 @@ void AppClass::Update(void)
 	if (m_bFPC == true)
 		CameraRotation();
 
-	ArcBall();
-	m_pMeshMngr->SetModelMatrix(ToMatrix4(m_qArcBall), 0);
-
 	//Getting the time between calls
 	double fCallTime = m_pSystem->LapClock();
 	//Counting the cumulative time
@@ -65,29 +62,37 @@ void AppClass::Update(void)
 	matrix4 scaleSun = glm::scale(vector3(5.936f));
 
 	//Quaternions for rotation
-	glm::quat q1 = glm::angleAxis(0.0f, vector3(0.0f, 0.0f, 1.0f));
-	glm::quat q2 = glm::angleAxis(359.0f, vector3(0.0f, 0.0f, 1.0f));
+	glm::quat q1 = glm::angleAxis(0.0f, vector3(0.0f, 1.0f, 0.0f));
+	glm::quat q2 = glm::angleAxis(359.0f, vector3(0.0f, 1.0f, 0.0f));
 
 	glm::quat revEarth;
 	glm::quat orbEarth;
-	glm::quat rotMoon;
+	glm::quat revMoon;
 	glm::quat orbMoon;
 
-	float fPercentEarthRev = MapValue((float)fRunTime, 0.0f, 2*fEarthHalfRevTime, 0.0f, 1.0f);
+	//Calculate the percentage of rotation for each orbit or revolution
+	//Earth's revolution around it's axis
+	float fPercentEarthRev = MapValue((float)fRunTime, 0.0f, 2 * fEarthHalfRevTime, 0.0f, 1.0f);
 	revEarth = glm::mix(q1, q2, fPercentEarthRev);
 
-	matrix4 earthRevolution = ToMatrix4(revEarth);
+	//Earth's orbit around the Sun
+	float fPercentEarthOrb = MapValue((float)fRunTime, 0.0f, 2 * fEarthHalfOrbTime, 0.0f, 1.0f);
+	orbEarth = glm::mix(q1, q2, fPercentEarthOrb);
 
-	float fPercentEarthOrb = MapValue((float)fRunTime, 0.0f, 2*fEarthHalfOrbTime, 0.0f, 1.0f);
-	//orbEarth = glm::mix(q1, q2, fPercentEarthOrb);
-
+	//The Moon's orbit around the Earth
 	float fPercentMoonOrb = MapValue((float)fRunTime, 0.0f, 2 * fMoonHalfOrbTime, 0.0f, 1.0f);
 	orbMoon = glm::mix(q1, q2, fPercentMoonOrb);
 
-	matrix4 moonOrbit = ToMatrix4(orbMoon);
+	//Translate, rotate, and scale the Earth around the Sun
+	m_m4Earth = m_m4Sun * ToMatrix4(orbEarth) * distEarth * scaleEarth;
 
-	m_m4Earth = m_m4Sun * ToMatrix4(orbEarth) * distEarth;
-	m_m4Moon = m_m4Earth * moonOrbit * distMoon * scaleMoon;
+	//Translate, rotate, and scale the Moon around the Earth
+	m_m4Moon = m_m4Earth * ToMatrix4(orbMoon) * distMoon * scaleMoon;
+
+	//Rotate the Earth along it's own axis
+	m_m4Earth = m_m4Earth * ToMatrix4(revEarth);
+
+	//Scale the Sun
 	m_m4Sun = m_m4Sun * scaleSun;
 
 	//Setting the matrices
@@ -102,6 +107,11 @@ void AppClass::Update(void)
 	static int nEarthRevolutions = 0;
 	static int nMoonOrbits = 0;
 
+	//Use the fPercents rounded down as Number of orbits/revolutions
+	nEarthOrbits = floor(fPercentEarthOrb);
+	nEarthRevolutions = floor(fPercentEarthRev);
+	nMoonOrbits = floor(fPercentMoonOrb);
+	
 	//Indicate the FPS
 	int nFPS = m_pSystem->GetFPS();
 
@@ -149,7 +159,7 @@ void AppClass::Display(void)
 	}
 
 	m_pMeshMngr->Render(); //renders the render list
-
+	m_pMeshMngr->ClearRenderList(); // Reset the Render list after render
 	m_pGLSystem->GLSwapBuffers(); //Swaps the OpenGL buffers
 }
 
