@@ -93,6 +93,15 @@ public:
 	OUTPUT: ---
 	*/
 	virtual void WriteConfig(void) final {}
+	/*
+	USAGE: Recursively Draws Sierpinski's Triangle
+	ARGUMENTS: bLeft - vector3 that is the bottom left point of each triangle
+			   bRight - vector3 that is the bottom right point of each triangle
+			   top - vector3 that is the top point of each triangle
+			   layers - number of layers you want to draw
+	OUTPUT: ---
+	*/
+	void DivTriangles(vector3 bLeft, vector3 bRight, vector3 top, int layers);
 };
 
 #endif //__APPLICATION_H_
