@@ -1,53 +1,62 @@
 #include "MyCameraClass.h"
 
 MyCamera::MyCamera() {
+	//Set matices = the Identity matrix
 	m4View = IDENTITY_M4;
 	m4Projection = IDENTITY_M4;
 
-	SetPosition(vector3(0.0f));
-	SetTarget(vector3(0.0f));
-	SetUp(vector3(0.0f));
+	//Set the vectors = vector3(1.0f, 1.0f, 1.0f)
+	SetPosition(vector3(1.0f));
+	SetTarget(vector3(1.0f));
+	SetUp(vector3(1.0f));
 }
 
 MyCamera::MyCamera(vector3 a_v3Position, vector3 a_v3Target, vector3 a_v3Up) {
+	//Set matices = the Identity matrix
 	m4View = IDENTITY_M4;
 	m4Projection = IDENTITY_M4;
 
-	SetPosition(a_v3Position);
+	//Set the vectors = argument vectors
+	SetPosition(a_v3Position);	
 	SetTarget(a_v3Target);
 	SetUp(a_v3Up);
+
+	//Store these positions for later
+	v3OriginPosition = a_v3Position;
+	v3OriginTarget = a_v3Target;
 }
 
 MyCamera::~MyCamera() {}
 
 matrix4 MyCamera::GetView(void) {
 
+	//Calculate the Camera's up vector
 	vector3 direction = glm::normalize(v3CameraPosition - v3CameraTarget);
 	vector3 right = glm::normalize(glm::cross(vector3(0.0f, 1.0f, 0.0f), direction));
 	vector3 up = glm::cross(direction, right);
 	SetUp(up);
 
-	vector3 v3TempTarget = v3CameraPosition - direction;
-	SetTarget(v3TempTarget);
-
-	vector3 v3LocalTarget = vector3(ToMatrix4(qOrientation) * vector4(v3CameraTarget, 1.0f));
+	//Put the stored position vector3 into the camera's orientation
 	vector3 v3LocalPosition = vector3(ToMatrix4(qOrientation) * vector4(v3CameraPosition, 1.0f));
+	vector3 v3LocalTarget = vector3(ToMatrix4(qOrientation) * vector4(v3CameraTarget, 1.0f));
 	vector3 v3LocalUp = vector3(ToMatrix4(qOrientation) * vector4(v3CameraUp, 1.0f));
 
-	matrix4 transpose = glm::transpose(ToMatrix4(qOrientation));
-	matrix4 inverse = glm::inverse(ToMatrix4(qOrientation));
+	//Calculate the transpose of the orietation
+	matrix4 m4Transpose = glm::transpose(ToMatrix4(qOrientation));
 
-	return m4View = glm::lookAt(v3LocalPosition, v3LocalTarget, v3LocalUp);
+	//Return the View matrix
+	return m4View = m4Transpose * glm::lookAt(v3LocalPosition, v3LocalTarget, v3LocalUp);
 
 }
 
 matrix4 MyCamera::GetProjection(bool bOrthographic) {
-	if (bOrthographic) {
+	if (bOrthographic) {	//if true use orthographic view
 		m4Projection = glm::ortho(-10.80f, 10.80f, -7.68f, 7.68f, 0.01f, 1000.0f);
 	}
-	else {
+	else {					//if false use perspective view
 		m4Projection = glm::perspective(45.0f, 1080.0f / 768.0f, 0.01f, 1000.0f);
 	}
+	//Return the Projection matrix
 	return m4Projection;
 }
 
@@ -63,38 +72,61 @@ void MyCamera::SetUp(vector3 v3Up) {
 	v3CameraUp = v3Up;
 }
 
-void MyCamera::MoveForward(float fIncrement) {
-	vector3 v3Translate = vector3(0.0f, 0.0f, -fIncrement);
+void MyCamera::ResetPosition() {
+	//Set position and target back to the first values
+	SetPosition(v3OriginPosition);
+	SetTarget(v3OriginTarget);
+}
 
-	SetTarget(v3CameraTarget + v3Translate);
+void MyCamera::ResetOrientation() {
+	//Set orientation = blank quaternion
+	qOrientation = quaternion();
+}
+
+void MyCamera::MoveForward(float fIncrement) {
+	//Make a translateion vector3 in the camera's orientation along the z-axis
+	vector3 v3Translate = vector3(ToMatrix4(qOrientation) * vector4(0.0f, 0.0f, -fIncrement,1.0f));
+
+	//Modify the position and target
 	SetPosition(v3CameraPosition + v3Translate);
+	SetTarget(v3CameraTarget + v3Translate);
 }
 
 void MyCamera::MoveSideways(float fIncrement) {
-	vector3 v3Translate = vector3(fIncrement, 0.0f, 0.0f);
+	//Make a translateion vector3 in the camera's orientation along the x-axis
+	vector3 v3Translate = vector3(ToMatrix4(qOrientation) * vector4(fIncrement, 0.0f, 0.0f,1.0f));
 
-	SetTarget(v3CameraTarget + v3Translate);
+	//Modify the position and target
 	SetPosition(v3CameraPosition + v3Translate);
+	SetTarget(v3CameraTarget + v3Translate);
 }
 
 void MyCamera::MoveVertical(float fIncrement) {
-	vector3 v3Translate = vector3(0.0f, fIncrement, 0.0f);
+	//Make a translateion vector3 in the camera's orientation along the y-axis
+	vector3 v3Translate = vector3(ToMatrix4(qOrientation) * vector4(0.0f, fIncrement, 0.0f, 1.0f));
 
-	SetTarget(v3CameraTarget + v3Translate);
+	//Modify the position and target
 	SetPosition(v3CameraPosition + v3Translate);
+	SetTarget(v3CameraTarget + v3Translate);
 }
 
 void MyCamera::ChangePitch(float fIncrement) {
-	quaternion qPitch = glm::angleAxis(-fIncrement, vector3(1.0f, 0.0f, 0.0f));
+	//Create a rotation quaternion about the x-axis
+	quaternion qPitch = glm::angleAxis(fIncrement, REAXISX);
+	//Modify the orientation
 	qOrientation = qOrientation * qPitch;
 }
 
 void MyCamera::ChangeRoll(float fIncrement) {
-	quaternion qRoll = glm::angleAxis(-fIncrement, vector3(0.0f, 0.0f, 1.0f));
+	//Create a rotation quaternion about the z-axis
+	quaternion qRoll = glm::angleAxis(fIncrement, REAXISZ);
+	//Modify the orientation
 	qOrientation = qOrientation * qRoll;
 }
 
 void MyCamera::ChangeYaw(float fIncrement) {
-	quaternion qYaw = glm::angleAxis(-fIncrement, v3CameraUp);
+	//Create a rotation quaternion about the y-axis
+	quaternion qYaw = glm::angleAxis(fIncrement, REAXISY);
+	//Modify the orientation
 	qOrientation = qOrientation * qYaw;
 }
