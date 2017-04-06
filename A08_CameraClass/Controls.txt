@@ -1,0 +1,11 @@
+Move:
+Forward/Back - W/S
+Left/Right - A/D
+Up/Down - Q/E
+
+Rotate:
+Pitch - I/K
+Roll - U/O
+Yaw - J/L
+
+Reset to original Position/Orientation - R
