@@ -37,10 +37,10 @@ void AppClass::ProcessKeyboard(void)
 		m_MyCamera->MoveSideways(fSpeed);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-		m_MyCamera->MoveVertical(-fSpeed);
+		m_MyCamera->MoveVertical(fSpeed);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
-		m_MyCamera->MoveVertical(fSpeed);
+		m_MyCamera->MoveVertical(-fSpeed);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
 		m_MyCamera->ChangePitch(fSpeed);
@@ -55,10 +55,10 @@ void AppClass::ProcessKeyboard(void)
 		m_MyCamera->ChangeYaw(-fSpeed);
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::U))
-		m_MyCamera->ChangeRoll(fSpeed);
+		m_MyCamera->ChangeRoll(-fSpeed);
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::O))
-		m_MyCamera->ChangeRoll(-fSpeed);
+		m_MyCamera->ChangeRoll(fSpeed);
 #pragma endregion
 
 #pragma region Other Actions
@@ -85,23 +85,11 @@ void AppClass::ProcessMouse(void)
 	ON_MOUSE_PRESS_RELEASE(Left, NULL, bLeft = true)
 	if (bLeft)
 	{
-		//Turn off the visibility of all BOs for all instances
-		m_pMeshMngr->SetVisibleBO(BD_NONE, "ALL", -1);
 		//Get the Position and direction of the click on the screen
 		std::pair<vector3, vector3> pair =
 			m_pCameraMngr->GetClickAndDirectionOnWorldSpace(sf::Mouse::getPosition().x, sf::Mouse::getPosition().y);
 		float fDistance = 0;//Stores the distance to the first colliding object
 		m_selection = m_pMeshMngr->IsColliding(pair.first, pair.second, fDistance);
-
-		//If there is a collision
-		if (m_selection.first >= 0)
-		{
-			//Turn on the BO of the group
-			m_pMeshMngr->SetVisibleBO(BD_OB, m_selection.first, m_selection.second);
-
-			//Turn of the BO of the instance but not the group
-			m_pMeshMngr->SetVisibleBO(BD_NONE, m_selection.first, -2);
-		}
 	}
 	
 	if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle))

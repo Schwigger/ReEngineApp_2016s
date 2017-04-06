@@ -21,13 +21,13 @@ MyCamera::MyCamera(vector3 a_v3Position, vector3 a_v3Target, vector3 a_v3Up) {
 MyCamera::~MyCamera() {}
 
 matrix4 MyCamera::GetView(void) {
-	
+
 	vector3 direction = glm::normalize(v3CameraPosition - v3CameraTarget);
 	vector3 right = glm::normalize(glm::cross(vector3(0.0f, 1.0f, 0.0f), direction));
 	vector3 up = glm::cross(direction, right);
 	SetUp(up);
 
-	return m4View = ToMatrix4(qOrientation) * glm::lookAt(v3CameraPosition, v3CameraTarget, v3CameraUp);
+	return m4View = ToMatrix4(qOrientation) * glm::lookAt(v3CameraPosition, v3CameraPosition - direction, v3CameraUp);
 }
 
 matrix4 MyCamera::GetProjection(bool bOrthographic) {
@@ -53,21 +53,33 @@ void MyCamera::SetUp(vector3 v3Up) {
 }
 
 void MyCamera::MoveForward(float fIncrement) {
-	vector3 translate = vector3(0.0f, 0.0f, -fIncrement);
-	SetPosition(v3CameraPosition + translate);
-	SetTarget(v3CameraTarget + translate);
+	vector3 v3Translate = vector3(0.0f, 0.0f, -fIncrement);
+
+	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
+	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
+
+	SetTarget(v3LocTarget + v3LocTranslate);
+	SetPosition(v3CameraPosition + v3Translate);
 }
 
 void MyCamera::MoveSideways(float fIncrement) {
-	vector3 translate = vector3(fIncrement, 0.0f, 0.0f);
-	SetPosition(v3CameraPosition + translate);
-	SetTarget(v3CameraTarget + translate);
+	vector3 v3Translate = vector3(fIncrement, 0.0f, 0.0f);
+
+	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
+	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
+
+	SetTarget(v3LocTarget + v3LocTranslate);
+	SetPosition(v3CameraPosition + v3Translate);
 }
 
 void MyCamera::MoveVertical(float fIncrement) {
-	vector3 translate = vector3(0.0f, fIncrement, 0.0f);
-	SetPosition(v3CameraPosition + translate);
-	SetTarget(v3CameraTarget + translate);
+	vector3 v3Translate = vector3(0.0f, fIncrement, 0.0f);
+
+	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
+	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
+
+	SetTarget(v3LocTarget + v3LocTranslate);
+	SetPosition(v3CameraPosition + v3Translate);
 }
 
 void MyCamera::ChangePitch(float fIncrement) {

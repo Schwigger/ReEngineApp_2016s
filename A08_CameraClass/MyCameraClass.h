@@ -39,6 +39,9 @@ public:
 	//Set the Up vector of the camera
 	void SetUp(vector3 v3Up);
 
+	//Set the Forward vector of the camera
+	void SetForward(vector3 v3Position, vector3 vsTarget);
+
 	//Move the camera forward or backwards, depending on the "view vector"
 	void MoveForward(float fIncrement);
 
