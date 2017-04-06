@@ -27,7 +27,18 @@ matrix4 MyCamera::GetView(void) {
 	vector3 up = glm::cross(direction, right);
 	SetUp(up);
 
-	return m4View = ToMatrix4(qOrientation) * glm::lookAt(v3CameraPosition, v3CameraPosition - direction, v3CameraUp);
+	vector3 v3TempTarget = v3CameraPosition - direction;
+	SetTarget(v3TempTarget);
+
+	vector3 v3LocalTarget = vector3(ToMatrix4(qOrientation) * vector4(v3CameraTarget, 1.0f));
+	vector3 v3LocalPosition = vector3(ToMatrix4(qOrientation) * vector4(v3CameraPosition, 1.0f));
+	vector3 v3LocalUp = vector3(ToMatrix4(qOrientation) * vector4(v3CameraUp, 1.0f));
+
+	matrix4 transpose = glm::transpose(ToMatrix4(qOrientation));
+	matrix4 inverse = glm::inverse(ToMatrix4(qOrientation));
+
+	return m4View = glm::lookAt(v3LocalPosition, v3LocalTarget, v3LocalUp);
+
 }
 
 matrix4 MyCamera::GetProjection(bool bOrthographic) {
@@ -55,30 +66,21 @@ void MyCamera::SetUp(vector3 v3Up) {
 void MyCamera::MoveForward(float fIncrement) {
 	vector3 v3Translate = vector3(0.0f, 0.0f, -fIncrement);
 
-	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
-	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
-
-	SetTarget(v3LocTarget + v3LocTranslate);
+	SetTarget(v3CameraTarget + v3Translate);
 	SetPosition(v3CameraPosition + v3Translate);
 }
 
 void MyCamera::MoveSideways(float fIncrement) {
 	vector3 v3Translate = vector3(fIncrement, 0.0f, 0.0f);
 
-	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
-	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
-
-	SetTarget(v3LocTarget + v3LocTranslate);
+	SetTarget(v3CameraTarget + v3Translate);
 	SetPosition(v3CameraPosition + v3Translate);
 }
 
 void MyCamera::MoveVertical(float fIncrement) {
 	vector3 v3Translate = vector3(0.0f, fIncrement, 0.0f);
 
-	vector3 v3LocTranslate = vector3(GetView() * vector4(v3Translate, 0.0f));
-	vector3 v3LocTarget = vector3(GetView() * vector4(v3CameraTarget, 0.0f));
-
-	SetTarget(v3LocTarget + v3LocTranslate);
+	SetTarget(v3CameraTarget + v3Translate);
 	SetPosition(v3CameraPosition + v3Translate);
 }
 
