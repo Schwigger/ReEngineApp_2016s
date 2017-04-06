@@ -15,41 +15,31 @@ void AppClass::Update(void)
 
 #pragma region YOUR CODE GOES HERE
 	modelMatrix = IDENTITY_M4;
-	float fPercentRotate;
-	float fPercentMove;
-	matrix4 trans;
-	vector3 v3Top = vector3(0.0f, 3.0f, 0.0f);
-	vector3 v3Lerp;
 
-	static float fTop = 1.0f;
-	static float fBottom = 0.0f;
+	static vector3 v3Start = vector3(0.0f);
+	static vector3 v3End = vector3(0.0f, 3.0f, 0.0f);
 
-	glm::quat q1 = glm::angleAxis(0.0f, vector3(0.0f, 0.0f, 1.0f));
-	glm::quat q2 = glm::angleAxis(359.0f, vector3(0.0f, 0.0f, 1.0f));
-	glm::quat q3;
+	float fTotalTime = 2.0f;
+	float fPercentage = MapValue(fTimer, 0.0f, fTotalTime, 0.0f, 1.0f);
 
-	fPercentRotate = MapValue(fTimer, 0.0f, 2.0f, 0.0f, 1.0f);
-	fPercentMove = MapValue(fTimer, 0.0f, 2.0f, fBottom, fTop);
+	//Translateion part
+	vector3 v3Current = glm::lerp(v3Start, v3End, fPercentage);
+	matrix4 m4Translate = glm::translate(v3Current);
 
-	if (fPercentMove > 1.0f || fPercentMove < 0.0f) {
+	//Rotation part
+	quaternion q1 = glm::angleAxis(0.0f, REAXISZ);
+	quaternion q2 = glm::angleAxis(180.0f, REAXISZ);
 
+
+	quaternion q3 = glm::mix(q1, q2, 2.0f * fPercentage);
+
+	modelMatrix *= (m4Translate * ToMatrix4(q3));
+
+	if (fPercentage > 1.0f) {
 		fTimer = 0.0f;
 
-		//vector3 v3Temp = v3Top;
-		//v3Top = v3Bottom;
-		//v3Bottom = v3Temp;
-
-		float fTemp = fTop;
-		fTop = fBottom;
-		fBottom = fTemp;
+		std::swap(v3Start, v3End);
 	}
-
-	q3 = glm::mix(q1, q2, fPercentRotate);
-
-	v3Lerp = glm::lerp(v3Lerp, v3Top, fPercentMove);
-	trans = glm::translate(v3Lerp);
-
-	modelMatrix = modelMatrix * trans * ToMatrix4(q3);
 #pragma endregion
 
 #pragma region DOES NOT NEED CHANGES
