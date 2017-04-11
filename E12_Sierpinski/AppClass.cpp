@@ -48,8 +48,13 @@ void AppClass::Update(void)
 	//print info into the console
 	printf("FPS: %d            \r", nFPS);//print the Frames per Second
 										  //Print info on the screen
+<<<<<<< HEAD
 	m_pMeshMngr->PrintLine("");
 	m_pMeshMngr->PrintLine(m_pSystem->GetAppName() + " : mxs9629", REYELLOW);
+=======
+	m_pMeshMngr->PrintLine("");//Add a line on top
+	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+>>>>>>> 3a599dd642348e48a93f58a5cdd8a50114af0a2c
 	m_pMeshMngr->Print("FPS:");
 	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
 }

@@ -52,7 +52,12 @@ void AppClass::Update(void)
 	int nFPS = m_pSystem->GetFPS();
 
 	//Print info on the screen
+<<<<<<< HEAD
 	m_pMeshMngr->PrintLine("\n" + m_pSystem->GetAppName() + " - Schweigardt (mxs9629)", REYELLOW);
+=======
+	m_pMeshMngr->PrintLine("");//Add a line on top
+	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+>>>>>>> 3a599dd642348e48a93f58a5cdd8a50114af0a2c
 	m_pMeshMngr->PrintLine("Timer: ");
 	m_pMeshMngr->PrintLine(std::to_string(fTimer), REGREEN);
 

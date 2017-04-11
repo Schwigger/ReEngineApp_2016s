@@ -108,10 +108,15 @@ void AppClass::Update(void)
 	int nFPS = m_pSystem->GetFPS();
 
 	//Print info on the screen
+<<<<<<< HEAD
 	m_pMeshMngr->PrintLine("");
 	m_pMeshMngr->PrintLine(m_pSystem->GetAppName() + " - Schweigardt", REYELLOW);
 	m_pMeshMngr->PrintLine("Time is : " + std::to_string(timer));	//Print the time
 	//Print the FPS
+=======
+	m_pMeshMngr->PrintLine("");//Add a line on top
+	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), REYELLOW);
+>>>>>>> 3a599dd642348e48a93f58a5cdd8a50114af0a2c
 	m_pMeshMngr->Print("FPS:");
 	m_pMeshMngr->Print(std::to_string(nFPS), RERED);
 #pragma endregion
