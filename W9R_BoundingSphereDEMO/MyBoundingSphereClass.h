@@ -5,6 +5,7 @@ class MyBoundingSphereClass
 {
 public:
 	float m_fRadius = 0.0f; //radius of the sphere
+	bool m_bColliding = false;	//if the sphere is colliding with another
 	vector3 m_v3CenterLocal = vector3(0.0f); //center of the sphere in local space
 	vector3 m_v3CenterGlobal = vector3(0.0f); //center of the sphere in global space
 	matrix4 m_m4ToWorld = IDENTITY_M4; //matrix that takes you from local to global space
@@ -21,4 +22,8 @@ public:
 	Sets the transform from the local to world matrix
 	*/
 	void SetModelMatrix(matrix4 a_m4ToWorld);
+	/*
+	Will check the collision with another object
+	*/
+	bool isColliding(MyBoundingSphereClass* a_other);
 };

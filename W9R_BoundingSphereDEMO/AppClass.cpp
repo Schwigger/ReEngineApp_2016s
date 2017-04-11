@@ -13,7 +13,13 @@ void AppClass::InitVariables(void)
 		REAXISY);//What is up
 	//Load a model onto the Mesh manager
 	m_pMeshMngr->LoadModel("Minecraft\\Zombie.obj", "Zombie");
+	m_pMeshMngr->LoadModel("Minecraft\\Steve.obj", "Steve");
+	m_pMeshMngr->LoadModel("Minecraft\\Cow.obj", "Cow");
 	m_pBS0 = new MyBoundingSphereClass(m_pMeshMngr->GetVertexList("Zombie"));
+	m_pBS1 = new MyBoundingSphereClass(m_pMeshMngr->GetVertexList("Steve"));
+	matrix4 m4Position = glm::translate(vector3(3.0f, 0.0f, 0.0f));
+	m_pBS2 = new MyBoundingSphereClass(m_pMeshMngr->GetVertexList("Cow"));
+	matrix4 m4Position2 = glm::translate(vector3(1.5f, 1.5f, 0.0f));
 }
 
 void AppClass::Update(void)
@@ -36,6 +42,36 @@ void AppClass::Update(void)
 	m_pMeshMngr->SetModelMatrix(m4Translate, "Zombie"); //set the matrix to the model
 	m_pBS0->RenderSphere();//render the bounding sphere
 
+	if (m_pBS0->isColliding(m_pBS1)) {
+		m_pBS0->m_bColliding = true;
+		m_pBS1->m_bColliding = true;
+	}
+	else
+	{
+		m_pBS0->m_bColliding = false;
+		m_pBS1->m_bColliding = false;
+	}
+
+	static float fTimer = 0.0f;
+	static int nClock = m_pSystem->GenClock();
+	float fDeltaTime = m_pSystem->LapClock(nClock);
+	fTimer += fDeltaTime;
+
+	static vector3 v3Start = vector3(3.0f, 0.0f, 0.0f);
+	static vector3 v3End = vector3(5.0f, 0.0f, 0.0f);
+	float fPercentage = MapValue(fTimer, 0.0f, 3.0f, 0.0f, 1.0f);
+	vector3 v3Current = glm::lerp(v3Start, v3End, fPercentage);
+	matrix4 m4Translation = glm::translate(v3Current);
+
+	m_pMeshMngr->SetModelMatrix(m4Translation, "Steve");
+
+	m_pBS1->SetModelMatrix(m_pMeshMngr->GetModelMatrix("Steve"));
+	m_pBS1->RenderSphere();//render the bounding sphere
+
+	if (fPercentage > 1.0f) {
+		fTimer = 0.0f;
+		std::swap(v3Start, v3End);
+	}
 
 	//Adds all loaded instance to the render list
 	m_pMeshMngr->AddSkyboxToRenderList();
