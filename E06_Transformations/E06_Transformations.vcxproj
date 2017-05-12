@@ -14,7 +14,7 @@
     <ProjectGuid>{09624C28-F455-4565-96D5-CE98370CC69E}</ProjectGuid>
     <RootNamespace>E06_Transformations</RootNamespace>
     <ProjectName>E06_Transformations</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

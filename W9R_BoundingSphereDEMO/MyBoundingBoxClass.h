@@ -7,16 +7,7 @@ private:
 	float m_fRadius = 0.0f; //radius of the sphere
 	vector3 m_v3CenterLocal = vector3(0.0f); //center of the sphere in local space
 	vector3 m_v3CenterGlobal = vector3(0.0f); //center of the sphere in global space
-<<<<<<< HEAD
-	vector3 m_v3Size = vector3(0.0f);//size of the box
-	matrix4 m_m4ToWorld = IDENTITY_M4; //matrix that takes you from local to global space
-	MeshManagerSingleton* m_pMeshMngr = nullptr; //for drawing the sphere
-	vector3 m_v3Max = vector3(0.0f);
-	vector3 m_v3Min = vector3(0.0f);
-	vector3 m_v3MaxGlobal = vector3(0.0f);
-	vector3 m_v3MinGlobal = vector3(0.0f);
-	bool m_bColliding = false;
-=======
+
 	matrix4 m_m4ToWorld = IDENTITY_M4; //matrix that takes you from local to global space
 	MeshManagerSingleton* m_pMeshMngr = nullptr; //for drawing the sphere
 	bool m_bColliding = false;
@@ -28,7 +19,6 @@ private:
 	vector3 m_v3MaxG;
 	vector3 m_v3MinG;
 	vector3 m_v3SizeG;
->>>>>>> be672c5fdf7e2c04214839dfeb33e067698a7265
 public:
 	/*
 	Sets Colliding
@@ -75,11 +65,8 @@ public:
 	/*
 	Renders the sphere based on the radius and the center in global space
 	*/
-<<<<<<< HEAD
 	void Render();
-=======
 	void RenderSphere();
->>>>>>> be672c5fdf7e2c04214839dfeb33e067698a7265
 	/*
 	Sets the transform from the local to world matrix
 	*/
