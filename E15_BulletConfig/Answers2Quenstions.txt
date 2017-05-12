@@ -1,0 +1,5 @@
+1.) It catches the Bullets so they don't fly off into space
+
+2.) It detects aabb-overlapping?
+
+3.) A cude
