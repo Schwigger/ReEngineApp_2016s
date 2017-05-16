@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("309.02 - Fall 2015 Final"); // Window Name
+	super::InitWindow("309.02 - Fall 2015 Final - Mat Schweigardt (mxs9629)"); // Window Name
 
 	m_v4ClearColor = vector4(0.4f, 0.6f, 0.9f, 0.0f);
 }

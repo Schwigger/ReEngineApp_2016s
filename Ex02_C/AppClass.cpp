@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("DSA2 Final: Your Name goes here"); // Window Name
+	super::InitWindow("DSA2 Final: Mat Schweigardt (mxs9629)"); // Window Name
 	m_pSystem->SetWindowWidth(600);
 	m_pSystem->SetWindowHeight(600);
 }
@@ -21,9 +21,9 @@ void AppClass::UpdateOrientation(void)
 {
 	static vector3 v3Orientation;
 	
-	m_m4Orientation = glm::rotate(IDENTITY_M4, v3Orientation.x, REAXISX);
-	m_m4Orientation = glm::rotate(m_m4Orientation, v3Orientation.y, REAXISY);
-	m_m4Orientation = glm::rotate(m_m4Orientation, v3Orientation.z, REAXISZ);
+	//m_m4Orientation = glm::rotate(IDENTITY_M4, v3Orientation.x, REAXISX);
+	//m_m4Orientation = glm::rotate(m_m4Orientation, v3Orientation.y, REAXISY);
+	//m_m4Orientation = glm::rotate(m_m4Orientation, v3Orientation.z, REAXISZ);
 	
 	m_m4Orientation = m_m4Orientation * ToMatrix4(quaternion(vector3(glm::radians(1.0f), glm::radians(1.0f), glm::radians(1.0f))));
 	v3Orientation += vector3(1.0f);

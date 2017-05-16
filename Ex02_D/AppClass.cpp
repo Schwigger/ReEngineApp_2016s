@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("DSA2 Final: DEMO"); // Window Name
+	super::InitWindow("DSA2 Final: MAt Schweigardt (mxs9629)"); // Window Name
 	m_pSystem->SetWindowWidth(800);
 	m_pSystem->SetWindowHeight(800);
 }

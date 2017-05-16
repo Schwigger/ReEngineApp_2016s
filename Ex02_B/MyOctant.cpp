@@ -307,60 +307,55 @@ void MyOctant::Display(vector3 a_v3Color)
 }
 void MyOctant::Subdivide(void)
 {
-	//If this node has reach the maximum depth return without changes
-	if (m_nLevel >= m_nMaxLevel)
-		return;
+	if (m_nLevel >= m_nMaxLevel) return;
+	if (m_nChildren != 0) return;
 
-	//If this node has been already subdivided return without changes
-	if (m_nChildren != 0)
-		return;
-
-	//As this will have children it will not be a leaf
 	m_nChildren = 8;
 
 	float fSize = m_fSize / 4.0f;
 	float fSizeD = fSize * 2.0f;
+
 	vector3 v3Center;
-	//Octant 0 Bottom Left Back
 	v3Center = m_v3Center;
+
+	//Child 0
 	v3Center.x -= fSize;
 	v3Center.y -= fSize;
 	v3Center.z -= fSize;
 	m_pChild[0] = new MyOctant(v3Center, fSizeD);
-	//Octant 1 Bottom Right Back
+
+	//Child 1
 	v3Center.x += fSizeD;
 	m_pChild[1] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 2 Bottom Right Front
+	//Child 2
 	v3Center.z += fSizeD;
 	m_pChild[2] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 3 Bottom Left Front
+	//Child 3
 	v3Center.x -= fSizeD;
 	m_pChild[3] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 4 Top Left Front
+	//Child 4 
 	v3Center.y += fSizeD;
 	m_pChild[4] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 5 Top Left Back
+	//Child 5
 	v3Center.z -= fSizeD;
 	m_pChild[5] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 6 Top Right Back
+	//Child 6
 	v3Center.x += fSizeD;
 	m_pChild[6] = new MyOctant(v3Center, fSizeD);
 
-	//Octant 7 Top Right Front
+	//Child 7
 	v3Center.z += fSizeD;
 	m_pChild[7] = new MyOctant(v3Center, fSizeD);
 
-	for (uint nIndex = 0; nIndex < m_nChildren; nIndex++)
-	{
+	for (uint nIndex = 0; nIndex < m_nChildren; nIndex++) {
 		m_pChild[nIndex]->m_pParent = this;
 		m_pChild[nIndex]->m_nLevel = m_nLevel + 1;
-		if (m_pChild[nIndex]->ContainsMoreThan(m_nIdealBOCount))
-		{
+		if (m_pChild[nIndex]->ContainsMoreThan(m_nIdealBOCount)) {
 			m_pChild[nIndex]->Subdivide();
 		}
 	}

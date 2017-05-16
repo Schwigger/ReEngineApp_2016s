@@ -1,7 +1,7 @@
 #include "AppClass.h"
 void AppClass::InitWindow(String a_sWindowName)
 {
-	super::InitWindow("FINAL"); // Window Name
+	super::InitWindow("FINAL - Mat Schweigardt (mxs9629)"); // Window Name
 	m_v4ClearColor = vector4(0.4f, 0.6f, 0.9f, 0.0f); //Clear Color
 }
 
@@ -42,7 +42,7 @@ void AppClass::InitVariables(void)
 	m_pMeshMngr->LoadModel("Planets\\08_Neptune.obj", "08_Neptune");
 	m_pMeshMngr->LoadModel("Planets\\09_Pluto.obj", "09_Pluto");
 	
-	m_pMeshMngr->LoadModel("Sorted\\WarpPipe.ato", "WarpPipe");
+	m_pMeshMngr->LoadModel("Sorted\\WarpPipe.obj", "WarpPipe");
 
 	//Create BOs for all models
 	for (uint n = 0; n < m_pMeshMngr->GetInstanceCount() - 1; n++)
